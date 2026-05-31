@@ -202,7 +202,7 @@ export function App() {
                       <div className="item-row" key={item.id}>
                         <select value={item.productId} onChange={(e) => updateItem(item.id, { productId: e.target.value })}>
                           <option value="">Оберіть товар</option>
-                          {products.map((product) => <option key={product.id} value={product.id}>{product.name} - {money(product.price)} PLN</option>)}
+                          {products.map((product) => <option key={product.id} value={product.id}>{product.name} - {money(product.price)} UAH</option>)}
                         </select>
                         <input type="number" min="1" value={item.quantity} onChange={(e) => updateItem(item.id, { quantity: Number(e.target.value) })} />
                         <button type="button" className="icon-btn" onClick={() => setItems((list) => list.filter((x) => x.id !== item.id))}>x</button>
@@ -212,7 +212,7 @@ export function App() {
 
                   <div className="actions">
                     <button type="button" className="secondary" onClick={() => setItems((list) => [...list, emptyItem()])}>Додати товар</button>
-                    <strong>Разом: {money(total)} PLN</strong>
+                    <strong>Разом: {money(total)} UAH</strong>
                     <button className="primary">Оформити</button>
                   </div>
                 </form>
@@ -263,7 +263,7 @@ function Clients({ clients }: { clients: Client[] }) {
 
 function Products({ products }: { products: Product[] }) {
   return products.length ? (
-    <Table headers={['#', 'Назва', 'Опис', 'Ціна', 'Створено']} rows={products.map((p) => [p.id, p.name, p.description || '-', `${money(p.price)} PLN`, date(p.created_at)])} />
+    <Table headers={['#', 'Назва', 'Опис', 'Ціна', 'Створено']} rows={products.map((p) => [p.id, p.name, p.description || '-', `${money(p.price)} UAH`, date(p.created_at)])} />
   ) : <Empty text="Товарів поки немає" />;
 }
 
@@ -282,7 +282,7 @@ function Orders({ orders, onStatusChange, compact = false }: { orders: Order[]; 
               <td><span className="badge">{order.id}</span></td>
               <td>{order.client.name}</td>
               <td>{order.items.map((item) => <span className="chip" key={item.id}>{item.product.name} x{item.quantity}</span>)}</td>
-              <td><strong>{money(order.total_amount)} PLN</strong></td>
+              <td><strong>{money(order.total_amount)} UAH</strong></td>
               <td>
                 <select value={order.status} onChange={(e) => onStatusChange(order.id, e.target.value as OrderStatus)}>
                   {Object.entries(statuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
