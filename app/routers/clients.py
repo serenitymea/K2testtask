@@ -10,8 +10,7 @@ router = APIRouter()
 
 @router.post("/", response_model=ClientRead, status_code=status.HTTP_201_CREATED)
 def create_client(payload: ClientCreate, db: Session = Depends(get_db)):
-    existing = db.query(Client).filter(Client.email == payload.email).first()
-    if existing:
+    if db.query(Client).filter_by(email=payload.email).first():
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Client with email '{payload.email}' already exists",
@@ -30,7 +29,7 @@ def list_clients(db: Session = Depends(get_db)):
 
 @router.get("/{client_id}", response_model=ClientRead)
 def get_client(client_id: int, db: Session = Depends(get_db)):
-    client = db.query(Client).filter(Client.id == client_id).first()
+    client = db.get(Client, client_id)
     if not client:
         raise HTTPException(status_code=404, detail="Client not found")
     return client

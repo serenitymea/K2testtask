@@ -1,22 +1,17 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from decimal import Decimal
 
 from sqlalchemy import (
     Column, Integer, String, Numeric, DateTime,
-    ForeignKey, Table,
+    ForeignKey,
 )
 from sqlalchemy.orm import relationship
 
 from app.database import Base
 
 
-order_products = Table(
-    "order_products",
-    Base.metadata,
-    Column("order_id", Integer, ForeignKey("orders.id"), primary_key=True),
-    Column("product_id", Integer, ForeignKey("products.id"), primary_key=True),
-    Column("quantity", Integer, nullable=False, default=1),
-)
+def utc_now():
+    return datetime.now(UTC)
 
 
 class Client(Base):
@@ -26,7 +21,7 @@ class Client(Base):
     name = Column(String(200), nullable=False)
     email = Column(String(200), unique=True, nullable=False, index=True)
     phone = Column(String(50), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     orders = relationship("Order", back_populates="client")
 
@@ -38,7 +33,7 @@ class Product(Base):
     name = Column(String(200), nullable=False)
     description = Column(String(500), nullable=True)
     price = Column(Numeric(12, 2), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
 
 class Order(Base):
@@ -48,7 +43,7 @@ class Order(Base):
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
     total_amount = Column(Numeric(12, 2), nullable=False, default=Decimal("0.00"))
     status = Column(String(50), nullable=False, default="pending")
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     client = relationship("Client", back_populates="orders")
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
